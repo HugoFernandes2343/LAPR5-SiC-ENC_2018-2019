@@ -1,0 +1,1337 @@
+{
+	"info": {
+		"_postman_id": "77c036a8-ad63-41f7-9698-6c491d0328d6",
+		"name": "NodeJS Tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "POST",
+					"item": [
+						{
+							"name": "Registration",
+							"item": [
+								{
+									"name": "Valid User Registration",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "0419c848-1e91-4899-bc76-bac384540f62",
+												"exec": [
+													"pm.test(\"Should create the user without issues.\", function () {",
+													"    pm.response.to.have.status(201);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"name": "Content-Type",
+												"type": "text",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"email\":\"test_email@email.com\",\n\t\"password\":\"testpass\",\n\t\"firstname\":\"John\",\n\t\"lastname\":\"Doe\"\n}"
+										},
+										"url": {
+											"raw": "https://localhost:8081/users/register",
+											"protocol": "https",
+											"host": [
+												"localhost"
+											],
+											"port": "8081",
+											"path": [
+												"users",
+												"register"
+											]
+										},
+										"description": "Attemps to register a new user in the database."
+									},
+									"response": []
+								},
+								{
+									"name": "Invalid User Registration",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "73926945-b10d-427a-96ba-cfd06fdb44df",
+												"exec": [
+													"pm.test(\"Should return an error, as it has invalid parameters. Should have response 400.\", function () {",
+													"    pm.response.to.have.status(400);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"name": "Content-Type",
+												"value": "application/json",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"password\":\"testpass\",\n\t\"firstname\":\"John\",\n\t\"lastname\":\"Doe\"\n}"
+										},
+										"url": {
+											"raw": "https://localhost:8081/users/register",
+											"protocol": "https",
+											"host": [
+												"localhost"
+											],
+											"port": "8081",
+											"path": [
+												"users",
+												"register"
+											]
+										},
+										"description": "Send an user with missing parameters."
+									},
+									"response": []
+								},
+								{
+									"name": "Invalid Email User Registration",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "e7560eb1-fc48-4791-83a8-84d42b9965cf",
+												"exec": [
+													"pm.test(\"Should return an error, as it has an invalid email.\", function () {",
+													"    pm.response.to.have.status(400);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"name": "Content-Type",
+												"value": "application/json",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"email\":\"test_email@email.com\",\n\t\"password\":\"testpass\",\n\t\"firstname\":\"Jane\",\n\t\"lastname\":\"Doe\"\n}"
+										},
+										"url": {
+											"raw": "https://localhost:8081/users/register",
+											"protocol": "https",
+											"host": [
+												"localhost"
+											],
+											"port": "8081",
+											"path": [
+												"users",
+												"register"
+											]
+										},
+										"description": "Attempts to send a registration request with an email that already exists."
+									},
+									"response": []
+								}
+							],
+							"description": "Tests the registration of an user.",
+							"_postman_isSubFolder": true
+						},
+						{
+							"name": "Login",
+							"item": [
+								{
+									"name": "Valid Login",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "bce1cb28-93ee-430a-a18b-9362f4b5210e",
+												"exec": [
+													"var jsonData = JSON.parse(responseBody);",
+													"pm.globals.set(\"token\", jsonData.token);",
+													"",
+													"pm.test(\"Should login without problems.\", function () {",
+													"    pm.response.to.have.status(200);",
+													"});",
+													"",
+													""
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"name": "Content-Type",
+												"value": "application/json",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"email\":\"test_email@email.com\",\n\t\"password\":\"testpass\"\n}"
+										},
+										"url": {
+											"raw": "https://localhost:8081/users/login",
+											"protocol": "https",
+											"host": [
+												"localhost"
+											],
+											"port": "8081",
+											"path": [
+												"users",
+												"login"
+											]
+										},
+										"description": "Logs a previously created user in."
+									},
+									"response": []
+								},
+								{
+									"name": "Invalid Login Password",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "9a62139d-643f-4e1b-8c6b-222902213273",
+												"exec": [
+													"pm.test(\"Should not login - password is wrong.\", function () {",
+													"    pm.response.to.have.status(401);",
+													"});",
+													"",
+													""
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"name": "Content-Type",
+												"value": "application/json",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"email\":\"test_email@email.com\",\n\t\"password\":\"testpassinvalid\"\n}"
+										},
+										"url": {
+											"raw": "https://localhost:8081/users/login",
+											"protocol": "https",
+											"host": [
+												"localhost"
+											],
+											"port": "8081",
+											"path": [
+												"users",
+												"login"
+											]
+										},
+										"description": "Login with wrong password."
+									},
+									"response": []
+								},
+								{
+									"name": "Invalid Login Email",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "9a62139d-643f-4e1b-8c6b-222902213273",
+												"exec": [
+													"pm.test(\"Should not login - password is wrong.\", function () {",
+													"    pm.response.to.have.status(404);",
+													"});",
+													"",
+													""
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"name": "Content-Type",
+												"type": "text",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"email\":\"test_emailinvalid@email.com\",\n\t\"password\":\"testpass\"\n}"
+										},
+										"url": {
+											"raw": "https://localhost:8081/users/login",
+											"protocol": "https",
+											"host": [
+												"localhost"
+											],
+											"port": "8081",
+											"path": [
+												"users",
+												"login"
+											]
+										},
+										"description": "Login with wrong email and right password."
+									},
+									"response": []
+								}
+							],
+							"description": "Attempts to login an user that we previously created.",
+							"_postman_isSubFolder": true
+						}
+					],
+					"description": "User POST requests.",
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "GET",
+					"item": [
+						{
+							"name": "Get by Email Valid",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "7629a70c-99e3-455f-8fae-3e9c861428f8",
+										"exec": [
+											"pm.test(\"Should find the user.\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "x-access-token",
+										"value": "{{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "https://localhost:8081/users/email/test_email@email.com",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8081",
+									"path": [
+										"users",
+										"email",
+										"test_email@email.com"
+									]
+								},
+								"description": "Returns an user with the email we specified."
+							},
+							"response": []
+						},
+						{
+							"name": "Get by Email Invalid",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "7629a70c-99e3-455f-8fae-3e9c861428f8",
+										"exec": [
+											"pm.test(\"Should return not found.\", function () {",
+											"    pm.response.to.have.status(404);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "x-access-token",
+										"type": "text",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "https://localhost:8081/users/email/test_emailinvalid@email.com",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8081",
+									"path": [
+										"users",
+										"email",
+										"test_emailinvalid@email.com"
+									]
+								},
+								"description": "Returns an user with an invalid email we specified."
+							},
+							"response": []
+						},
+						{
+							"name": "Get All Users",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "7629a70c-99e3-455f-8fae-3e9c861428f8",
+										"exec": [
+											"pm.test(\"Should find the user.\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "x-access-token",
+										"value": "{{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "https://localhost:8081/users/email/test_email@email.com",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8081",
+									"path": [
+										"users",
+										"email",
+										"test_email@email.com"
+									]
+								},
+								"description": "Returns all users in the database."
+							},
+							"response": []
+						}
+					],
+					"description": "User GET requests.",
+					"_postman_isSubFolder": true
+				}
+			],
+			"description": "User routes integration testing.",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "c72d5261-0ed9-4edf-b4b5-aaaada8f8760",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "943357f1-a2ab-423e-a92d-0c13d8ed5c40",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Order",
+			"item": [
+				{
+					"name": "POST",
+					"item": [
+						{
+							"name": "Post an Order Valid",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "de983413-c591-4c56-ac21-1449725897da",
+										"exec": [
+											"var jsonData = JSON.parse(responseBody);",
+											"pm.globals.set(\"new_order_id\", jsonData.order._id);",
+											"pm.globals.set(\"new_product_id\", jsonData.order.order_products[0]._id)",
+											"",
+											"pm.test(\"Should create the new order.\", function () {",
+											"    pm.response.to.have.status(201);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "x-access-token",
+										"value": "{{token}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"user_email\": \"test_email@email.com\",\r\n    \"order_products\": \"{1,6,7}\"\r\n}"
+								},
+								"url": {
+									"raw": "https://localhost:8081/orders/",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8081",
+									"path": [
+										"orders",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Post an Order Invalid",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "de983413-c591-4c56-ac21-1449725897da",
+										"exec": [
+											"pm.test(\"Should not be able to create an order, as products don't match the requirements.\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "x-access-token",
+										"type": "text",
+										"value": "{{token}}"
+									},
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"user_email\": \"test_email@email.com\",\r\n    \"order_products\": \"{1,2,3}\"\r\n}"
+								},
+								"url": {
+									"raw": "https://localhost:8081/orders/",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8081",
+									"path": [
+										"orders",
+										""
+									]
+								},
+								"description": "Tries to create an invalid order."
+							},
+							"response": []
+						},
+						{
+							"name": "Post an Order Invalid User",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "de983413-c591-4c56-ac21-1449725897da",
+										"exec": [
+											"pm.test(\"Should not be able to create an order, as products don't match the requirements.\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "x-access-token",
+										"type": "text",
+										"value": "{{token}}"
+									},
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"user_email\": \"test_email@email.com\",\r\n    \"order_products\": \"{1,2,3}\"\r\n}"
+								},
+								"url": {
+									"raw": "https://localhost:8081/orders/",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8081",
+									"path": [
+										"orders",
+										""
+									]
+								},
+								"description": "Tries to create an invalid order."
+							},
+							"response": []
+						}
+					],
+					"description": "Order POST requests.",
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "GET",
+					"item": [
+						{
+							"name": "GET All Orders",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "a3957df3-4764-4f55-9e9f-eb9f8d658e34",
+										"exec": [
+											"var jsonData = JSON.parse(responseBody);",
+											"pm.globals.set(\"order_id\", jsonData[0]._id);",
+											"",
+											"pm.test(\"Should return all orders\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "x-access-token",
+										"value": "{{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "https://localhost:8081/orders/",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8081",
+									"path": [
+										"orders",
+										""
+									]
+								},
+								"description": "Returns all the orders in the database."
+							},
+							"response": []
+						},
+						{
+							"name": "Get Order by Id Valid",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "cf381260-6e64-4a76-899a-110278a54e9f",
+										"exec": [
+											"var jsonData = JSON.parse(responseBody);",
+											"pm.globals.set(\"product_id\", jsonData.order_products[0]._id);",
+											"",
+											"pm.test(\"Should find the order.\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "x-access-token",
+										"value": "{{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "https://localhost:8081/orders/{{order_id}}",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8081",
+									"path": [
+										"orders",
+										"{{order_id}}"
+									]
+								},
+								"description": "Gets an order by id."
+							},
+							"response": []
+						},
+						{
+							"name": "Get Order by Id Invalid",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "cf381260-6e64-4a76-899a-110278a54e9f",
+										"exec": [
+											"pm.test(\"Should not find the order.\", function () {",
+											"    pm.response.to.have.status(418);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "x-access-token",
+										"type": "text",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "https://localhost:8081/orders/100",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8081",
+									"path": [
+										"orders",
+										"100"
+									]
+								},
+								"description": "Gets an order with an invalid id."
+							},
+							"response": []
+						},
+						{
+							"name": "Get Order Item By Id Valid",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "3324fcd4-18e5-422b-b288-38f4d09a08e7",
+										"exec": [
+											"pm.test(\"Should find the item in the order.\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "x-access-token",
+										"value": "{{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "https://localhost:8081/orders/{{order_id}}/item/{{product_id}}",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8081",
+									"path": [
+										"orders",
+										"{{order_id}}",
+										"item",
+										"{{product_id}}"
+									]
+								},
+								"description": "Gets an order item in an order by its id."
+							},
+							"response": []
+						},
+						{
+							"name": "Get Order Item by Id Invalid",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "290cb5ad-ba60-4340-9c74-64593be14d79",
+										"exec": [
+											"pm.test(\"Should not find the item in the order.\", function () {",
+											"    pm.response.to.have.status(418);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "x-access-token",
+										"value": "{{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "https://localhost:8081/orders/{{order_id}}/item/100",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8081",
+									"path": [
+										"orders",
+										"{{order_id}}",
+										"item",
+										"100"
+									]
+								},
+								"description": "Gets an order item with an invalid id."
+							},
+							"response": []
+						}
+					],
+					"description": "Order GET Requests.",
+					"_postman_isSubFolder": true
+				}
+			],
+			"description": "Order routes integratins testing.",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "fcf3b79f-489b-4de9-8af2-5c6ff6ceb1f8",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "cbb32d87-22e7-42ad-8b5f-ba0f9c6e0052",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Products",
+			"item": [
+				{
+					"name": "MongoDB GET",
+					"item": [
+						{
+							"name": "Get Product Item Id Valid",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "9d6b7945-c89b-45d7-9d42-e1e04927f2c7",
+										"exec": [
+											"pm.test(\"Should find the product.\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "x-access-token",
+										"value": "{{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "https://localhost:8081/products/productitem/{{product_id}}",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8081",
+									"path": [
+										"products",
+										"productitem",
+										"{{product_id}}"
+									]
+								},
+								"description": "Finds a product item with a valid id."
+							},
+							"response": []
+						},
+						{
+							"name": "Get Product Item Id Invalid",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "9d6b7945-c89b-45d7-9d42-e1e04927f2c7",
+										"exec": [
+											"pm.test(\"Should not find the product.\", function () {",
+											"    pm.response.to.have.status(418);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "x-access-token",
+										"type": "text",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "https://localhost:8081/products/productitem/100",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8081",
+									"path": [
+										"products",
+										"productitem",
+										"100"
+									]
+								},
+								"description": "Finds a product item with an invalid id."
+							},
+							"response": []
+						}
+					],
+					"description": "Product GET requests to the mongo db.",
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Catalog GET",
+					"item": [
+						{
+							"name": "Get All Products",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "ff8fb077-b63e-4ca0-b0e3-8906b270760d",
+										"exec": [
+											"pm.test(\"Should communicate with the other server.\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "x-access-token",
+										"value": "{{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "https://localhost:8081/products/",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8081",
+									"path": [
+										"products",
+										""
+									]
+								},
+								"description": "Should return all the products from the C# Catalog server."
+							},
+							"response": []
+						},
+						{
+							"name": "Get Product by Id Vaild",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "bba1847a-6551-4b54-bbc2-6aed8a8e3c76",
+										"exec": [
+											"pm.test(\"Should find the product.\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "x-access-token",
+										"value": "{{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "https://localhost:8081/products/2",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8081",
+									"path": [
+										"products",
+										"2"
+									]
+								},
+								"description": "Gets a product that exists in the catalog."
+							},
+							"response": []
+						},
+						{
+							"name": "Get Product by Id Invalid",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "bba1847a-6551-4b54-bbc2-6aed8a8e3c76",
+										"exec": [
+											"pm.test(\"Should not find the product.\", function () {",
+											"    pm.response.to.have.status(404);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "x-access-token",
+										"type": "text",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "https://localhost:8081/products/50",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8081",
+									"path": [
+										"products",
+										"50"
+									]
+								},
+								"description": "Gets a product that does not exist in the catalog."
+							},
+							"response": []
+						}
+					],
+					"description": "Product GET routes that communicate with the catalog.",
+					"_postman_isSubFolder": true
+				}
+			],
+			"description": "Product routes integration testing."
+		},
+		{
+			"name": "RestoreDB",
+			"item": [
+				{
+					"name": "Delete an Order",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "240d11ff-a47d-4fd1-9572-6753911f1a61",
+								"exec": [
+									"pm.test(\"Should delete the order without issues.\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "x-access-token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://localhost:8081/orders/{{new_order_id}}",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"orders",
+								"{{new_order_id}}"
+							]
+						},
+						"description": "Deletes the order we previously created."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "cd30d6dc-340d-4c9c-95ff-7f9ef000f28b",
+								"exec": [
+									"pm.test(\"Should delete the user without issues.\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "x-access-token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://localhost:8081/users/test_email@email.com",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"users",
+								"test_email@email.com"
+							]
+						},
+						"description": "Deletes the user we previously created."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a Product",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "240d11ff-a47d-4fd1-9572-6753911f1a61",
+								"exec": [
+									"pm.test(\"Should delete the product without issues.\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "x-access-token",
+								"type": "text",
+								"value": "{{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://localhost:8081/products/{{new_product_id}}",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"products",
+								"{{new_product_id}}"
+							]
+						},
+						"description": "Deletes the order we previously created."
+					},
+					"response": []
+				}
+			],
+			"description": "Clean up the created entities.",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "b839e2ae-6f95-47c8-92d0-94962cb5a39b",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "baa76808-4c4b-458f-bbd3-dda77d5b454d",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		}
+	]
+}
