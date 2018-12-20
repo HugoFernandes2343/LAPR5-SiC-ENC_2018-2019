@@ -7,10 +7,10 @@ module.exports = {
     /**
      * HTTPS Request URL
      */
-    HTTPS: 'https://arqsiweb-app.azurewebsites.net/api/product/',
+    HTTPS: 'https://lapr5-gc.azurewebsites.net/api/product/',
 
     /**
     * HTTP Request URL
     */
-    HTTP: 'http://arqsiweb-app.azurewebsites.net/api/product/',
+    HTTP: 'http://lapr5-gc.azurewebsites.net/api/product/',
 }
