@@ -21,17 +21,7 @@ var mongoose = require('mongoose');
 var app = express();
 var config = require('./config');
 var cors = require('cors');
-
-/**
- * =============================
- * MONGO DB CONNECTION
- * ============================
- */
-
-mongoose.Promise = global.Promise;
-mongoose.connect(config.database, { useNewUrlParser: true })
-  .then(() => console.log('Successfully connected to MongoDB database.'))
-  .catch((err) => console.error(err));
+var router = express.Router();
 
 /**
  * =============================
@@ -55,11 +45,21 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
  * ROUTES DEFINITION
  * ============================
  */
-
 app.use('/', require('../routes/index'));
 app.use('/orders', require('../routes/controller/orderController'));
 app.use('/products', require('../routes/controller/productController'));
 app.use('/users', require('../routes/controller/userController'));
+
+/**
+ * Middleware
+ */
+// middleware to use for all requests
+router.use(function (req, res, next) {
+  // do logging
+  console.log('Something is happening -->');
+  next(); // make sure we go to the next routes and don't stop here
+  console.log(' CHECK ');
+});
 
 /**
  * =============================
@@ -77,6 +77,23 @@ app.use(function (err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+ /**
+ * =============================
+ * MONGO DB CONNECTION
+ * ============================
+ */
+
+mongoose.connect(config.database, { useNewUrlParser: true }).catch((err) => console.error(err));
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'Connection error:'));
+db.once('open', function () {
+  console.log("We're connected!");
+  console.log("====================================");
+  console.log("IF YOU'RE LOCAL : http://localhost:8080");
+  console.log("====================================");
+})
+mongoose.Promise = global.Promise;
 
 /**
  * =============================

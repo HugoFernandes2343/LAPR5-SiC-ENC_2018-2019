@@ -14,17 +14,13 @@ var credentials = {key: privateKey, cert: certificate};
 
 /**
  * Use HTTP and HTTPS.
- */
-
+ * */
 var http = http.createServer(app);
 var https = https.createServer(credentials, app);
 
-/**
- * Listen on provided port, on all network interfaces.
- */
-
 http.listen(8080);
 https.listen(8081);
+
 
 console.log("Listening HTTP on port 8080.");
 console.log("Listening HTTPS on port 8081.");
