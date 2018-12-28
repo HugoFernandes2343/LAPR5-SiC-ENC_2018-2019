@@ -1,0 +1,348 @@
+{
+	"info": {
+		"_postman_id": "e3e26a43-eb78-4f0c-97c7-0403c569beb3",
+		"name": "Test Node.js",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Preparar Encomenda",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/prepararencomenda/?itens[0]=4&partes[4][0]=5",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"prepararencomenda",
+						""
+					],
+					"query": [
+						{
+							"key": "itens[0]",
+							"value": "4"
+						},
+						{
+							"key": "partes[4][0]",
+							"value": "5"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post Encomenda",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "name",
+							"value": "Nuno",
+							"type": "text"
+						},
+						{
+							"key": "date",
+							"value": "21/11/2019",
+							"type": "text"
+						},
+						{
+							"key": "address",
+							"value": "Rua da Arroteia n393",
+							"type": "text"
+						},
+						{
+							"key": "encomendaId",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "itens[0]",
+							"value": "4",
+							"type": "text"
+						},
+						{
+							"key": "produto[5][0]",
+							"value": "150",
+							"type": "text"
+						},
+						{
+							"key": "produto[5][1]",
+							"value": "150",
+							"type": "text"
+						},
+						{
+							"key": "produto[5][2]",
+							"value": "150",
+							"type": "text"
+						},
+						{
+							"key": "produto[5][3][0]",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "produto[5][3][1]",
+							"value": "4",
+							"type": "text"
+						},
+						{
+							"key": "produto[5][4][0]",
+							"value": "5",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/encomendas/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"encomendas",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Encomenda",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/encomendas/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"encomendas",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Put Encomenda",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "name",
+							"value": "Edgar",
+							"type": "text"
+						},
+						{
+							"key": "date",
+							"value": "21/11/2019",
+							"type": "text"
+						},
+						{
+							"key": "address",
+							"value": "Rua da Arroteia n391",
+							"type": "text"
+						},
+						{
+							"key": "encomendaId",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "itens[0]",
+							"value": "4",
+							"type": "text"
+						},
+						{
+							"key": "produto[5][0]",
+							"value": "100",
+							"type": "text"
+						},
+						{
+							"key": "produto[5][1]",
+							"value": "100",
+							"type": "text"
+						},
+						{
+							"key": "produto[5][2]",
+							"value": "100",
+							"type": "text"
+						},
+						{
+							"key": "produto[5][3][0]",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "produto[5][3][1]",
+							"value": "4",
+							"type": "text"
+						},
+						{
+							"key": "produto[5][4][0]",
+							"value": "5",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/encomendas/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"encomendas",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Encomenda Produtos",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/encomendas/1/itens",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"encomendas",
+						"1",
+						"itens"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Encomenda Produto",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/encomendas/1/itens/4",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"encomendas",
+						"1",
+						"itens",
+						"4"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Produto",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/itemproduto/4",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"itemproduto",
+						"4"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Encomenda",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/encomendas/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"encomendas",
+						"1"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
