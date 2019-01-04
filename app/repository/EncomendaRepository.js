@@ -6,17 +6,6 @@ var ItemProduto = require('../models/ItemProduto');
 
 class EncomendaRepository {
 
-    async saveEncomenda(encomenda, res) {
-
-        // save the encomenda and check for errors
-        await encomenda.save(function (err) {
-            if (err)
-                res.send(err);
-
-        });
-
-    }
-
     async getAllEncomendas(res) {
 
         // get all the encomendas
@@ -35,21 +24,28 @@ class EncomendaRepository {
 
     }
 
-    async getEncomenda(req, res) {
+    async getEncomendasByUsername(username, res) {
 
-        //get encomenda by id
-        await Encomenda.findById(req.params.encomenda_id, function (err, encomenda) {
+        // get all the encomendas
+        return await Encomenda.find({ name: username }, function (err, encomendas) {
+
             if (err)
                 res.send(err);
-            console.log(encomenda);
-            res.json(EncomendaDTO.createDTO(encomenda));
+
+            var list = new Array();
+
+            for (var i = 0; i < encomendas.length; i++) {
+                list.push(EncomendaDTO.createDTO(encomendas[i]));
+            }
+            res.send(list);
         });
+
     }
 
     async deleteEncomenda(req, res) {
 
         //delete encomenda
-        await Encomenda.remove({ _id: req.params.encomenda_id }, function (err) {
+        await Encomenda.remove({ _id: req.params.encomendaId }, function (err) {
             if (err)
                 res.send(err);
 
@@ -59,30 +55,45 @@ class EncomendaRepository {
 
     async deleteItensEncomenda(req, res) {
         //get encomenda by id
-        await Encomenda.findById(req.params.encomenda_id, function (err, encomenda) {
+        await Encomenda.findById(req.params.encomendaId, function (err, encomenda) {
             if (err)
                 res.send(err);
 
             for (var i = 0; i < encomenda.itens.length; i++) {
-                ItemProdutoRepository.deleteItemProduto(encomenda.itens[i], req.params.encomenda_id, res);
+                ItemProdutoRepository.deleteItemProduto(encomenda.itens[i], req.params.encomendaId, res);
             }
 
         });
 
     }
 
-    async getItensEncomenda(id, res) {
+    async saveEncomenda(encomenda, res) {
 
-        return await ItemProdutoRepository.findItensProdutoByEncomenda(id, res);
+        // save the encomenda and check for errors
+        await encomenda.save(function (err) {
+            if (err)
+                res.send(err);
+
+        });
+
+    }
+
+    async getEncomendaDetails(req, res) {
+
+        //get encomenda by id
+        await Encomenda.findById(req.params.encomendaId, function (err, encomenda) {
+            if (err)
+                res.send(err);
+            res.json(EncomendaDTO.createDTO(encomenda));
+        });
     }
 
     async editEncomenda(produto, req, res) {
-        await Encomenda.findById(req.params.encomenda_id, function (err, encomenda) {
+        await Encomenda.findById(req.params.encomendaId, function (err, encomenda) {
 
             if (err)
                 res.send(err);
 
-            encomenda.cost += produto.custo;
             encomenda.itens.push(produto.nome);
 
             encomenda.save(function (err) {
@@ -91,42 +102,6 @@ class EncomendaRepository {
             });
         });
     }
-
-    async editEncomendaDelete(idProduto, idEncomenda, res) {
-        await ItemProduto.find({ encomendaId: idEncomenda }, function (err, produtos) {
-            if (err)
-                res.send(err);
-
-            var name = "";
-            var custo = 0;
-
-            for (var i = 0; i < produtos.length; i++) {
-                if (produtos[i].produtoId == idProduto) {
-                    name = produtos[i].nome;
-                    custo = produtos[i].custo;
-                }
-            }
-
-            Encomenda.findById(idEncomenda, function (err, encomenda) {
-
-                if (err)
-                    res.send(err);
-    
-                encomenda.cost -= custo;
-                var index = encomenda.itens.indexOf(name);
-                if (index > -1) {
-                    encomenda.itens.splice(index, 1);
-                }
-    
-                console.log(encomenda);
-                encomenda.save(function (err) {
-                    if (err)
-                        res.send(err);
-                });
-            });
-        })
-    }
-
 }
 
 module.exports = new EncomendaRepository();

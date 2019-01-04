@@ -1,40 +1,28 @@
 var ItemProdutoRepository = require('../repository/ItemProdutoRepository');
 var ItemProduto = require('../models/ItemProduto');
-var ItemProdutoRepository = require('../repository/ItemProdutoRepository');
 var EncomendaRepository = require('../repository/EncomendaRepository');
 var Restricao = require('../models/Restricao');
 const fetch = require('node-fetch');
 
-exports.getAllItemProdutos = async function (req, res) {
 
-    await ItemProdutoRepository.getAllItemProdutos(res);
+exports.getItensEncomenda = async function (req, res) {
 
-}
-
-exports.getItemProduto = async function (req, res) {
-
-    await ItemProdutoRepository.getItemProduto(req, res);
+    await ItemProdutoRepository.findItensProdutoByEncomenda(req.params.encomendaId, res);
 
 }
 
-exports.deleteItemEncomenda = async function (req, res) {
+exports.getItemEncomenda = async function (req, res) {
 
-    await EncomendaRepository.editEncomendaDelete(req.params.itemproduto_id, req.params.encomenda_id,res);
-    await ItemProdutoRepository.deleteItemEncomenda(req.params.itemproduto_id, req.params.encomenda_id, res);
-    res.json({ message: 'Successfully deleted!' });
+    await ItemProdutoRepository.getItemEncomenda(req.params.encomendaId, req.params.itemName, res);
 
 }
 
-exports.putEncomendaItemProduto = async function (req, res) {
+exports.postItemEncomenda = async function (req, res) {
 
-    await ItemProdutoRepository.deleteItemEncomenda(req.params.itemproduto_id, req.params.encomenda_id, res);
-
-    var listPartes = new Array();
     var aux;
     var produto;
-    var count2 = 0;
 
-    var url = 'http://arqsiedgarcatarinaluis.azurewebsites.net/api/Produto/nome=' + req.body.nome;
+    var url = 'https://lapr5-gc.azurewebsites.net/api/product/search/' + req.body.name;
     await fetch(url).then(res => res.json())
         .then(json =>
             aux = json
@@ -42,74 +30,70 @@ exports.putEncomendaItemProduto = async function (req, res) {
 
     produto = await switchToItemProduto(aux);
 
-    var package = {
-        alturaproduto: req.body.altura,
-        profundidadeproduto: req.body.profundidade,
-        larguraproduto: req.body.largura,
-        larguramaxproduto: produto.larguraMax,
-        larguraminproduto: produto.larguraMin,
-        alturamaxproduto: produto.alturaMax,
-        alturaminproduto: produto.alturaMin,
-        profundidademaxproduto: produto.profundidadeMax,
-        profundidademinproduto: produto.profundidadeMin,
-        maxtaxaocupacao: produto.maxTaxaOcupacao,
-        taxaatual: produto.taxaOcupacaoObrigatoria,
-        materialProdutoId: req.body.materiaisAcabamentos,
-        larguraparte: 0,
-        alturaparte: 0,
-        profundidadeparte: 0,
-        materialPartes: []
-    };
+    var package = constructPackage(produto, req);
 
     if (await Restricao.checkDimensao(package)) {
+        if (await Restricao.checkMateriaisAcabamentos(package, aux)) {
 
-        for (j = 0; j < req.body.partesOpcionais.length; j++) {
-            var aux2;
-            var parte;
-            var url2 = 'http://arqsiedgarcatarinaluis.azurewebsites.net/api/Produto/nome=' + req.body.partesOpcionais[j];
-            await fetch(url2).then(res => res.json())
-                .then(json =>
-                    aux2 = json
-                );
+            for (j = 0; j < req.body.parts.length; j++) {
 
-            parte = await switchToItemProduto(aux2);
+                var aux2;
+                var url2 = 'https://lapr5-gc.azurewebsites.net/api/product/search/' + req.body.parts[j];
+                await fetch(url2).then(res => res.json())
+                    .then(json =>
+                        aux2 = json
+                    );
 
-            package.larguraparte = parte.largura;
-            package.alturaparte = parte.altura;
-            package.profundidadeparte = parte.profundidade;
-            package.materialPartes = parte.materiaisAcabamentos;
+                if (await Restricao.checkParte(aux2.name, produto.nome)) {
+                    produto.partesOpcionais.push(aux2.name);
+                }
 
-            if (await Restricao.checkMaterial(package) && await Restricao.checkCaber(package) && await Restricao.checkOcupacao(package)) {
-                listPartes.push(parte.nome);
-                count2++;
             }
 
+            var aux3;
+
+            var url = 'https://lapr5-gc.azurewebsites.net/api/combination';
+            await fetch(url).then(res => res.json())
+                .then(json =>
+                    aux3 = json
+                );
+
+            for (var i = 0; i < aux3.length; i++) {
+                if (aux3[i].containingProduct == produto.nome && aux3[i].required == true) {
+                    produto.partesObrigatorias.push(aux3[i].containedProduct);
+                }
+            }
+
+            if (produto.partesOpcionais.length == req.body.parts.length) {
+                produto.altura = req.body.heigth;
+                produto.profundidade = req.body.depth;
+                produto.largura = req.body.width;
+                produto.materiaisAcabamentos = req.body.materialsFinishes;
+                produto.encomendaId = req.params.encomendaId;
+                await EncomendaRepository.editEncomenda(produto, req, res);
+                await ItemProdutoRepository.saveItemProduto(produto, res);
+                res.json({ message: 'Item Produto saved!' });
+            } else {
+                res.json({ message: 'Invalid Parts!' });
+            }
+
+        } else {
+            res.json({ message: 'Invalid Materials and Finishes!' });
         }
 
+    } else {
+        res.json({ message: 'Invalid Dimensions!' });
     }
-
-    if (count2 == req.body.partesOpcionais.length) {
-        produto.partesOpcionais = listPartes;
-        produto.altura = req.body.altura;
-        produto.profundidade = req.body.profundidade;
-        produto.largura = req.body.largura;
-        produto.materiaisAcabamentos = req.body.materiaisAcabamentos;
-        produto.encomendaId = req.params.encomenda_id;
-        await ItemProdutoRepository.saveItemProduto(produto,res);
-    }
-
-    res.json({ message: 'Item Produto updated!' });
 
 }
 
-exports.postEncomendaItemProduto = async function (req, res) {
+exports.putItemEncomenda = async function (req, res) {
 
-    var listPartes = new Array();
+
     var aux;
     var produto;
-    var count2 = 0;
 
-    var url = 'http://arqsiedgarcatarinaluis.azurewebsites.net/api/Produto/nome=' + req.body.nome;
+    var url = 'https://lapr5-gc.azurewebsites.net/api/product/search/' + req.params.itemName;
     await fetch(url).then(res => res.json())
         .then(json =>
             aux = json
@@ -117,92 +101,88 @@ exports.postEncomendaItemProduto = async function (req, res) {
 
     produto = await switchToItemProduto(aux);
 
-    var package = {
-        alturaproduto: req.body.altura,
-        profundidadeproduto: req.body.profundidade,
-        larguraproduto: req.body.largura,
-        larguramaxproduto: produto.larguraMax,
-        larguraminproduto: produto.larguraMin,
-        alturamaxproduto: produto.alturaMax,
-        alturaminproduto: produto.alturaMin,
-        profundidademaxproduto: produto.profundidadeMax,
-        profundidademinproduto: produto.profundidadeMin,
-        maxtaxaocupacao: produto.maxTaxaOcupacao,
-        taxaatual: produto.taxaOcupacaoObrigatoria,
-        materialProdutoId: req.body.materiaisAcabamentos,
-        larguraparte: 0,
-        alturaparte: 0,
-        profundidadeparte: 0,
-        materialPartes: []
-    };
+    var package = constructPackage(produto, req);
 
     if (await Restricao.checkDimensao(package)) {
+        if (await Restricao.checkMateriaisAcabamentos(package, aux)) {
 
-        for (j = 0; j < req.body.partesOpcionais.length; j++) {
-            var aux2;
-            var parte;
-            var url2 = 'http://arqsiedgarcatarinaluis.azurewebsites.net/api/Produto/nome=' + req.body.partesOpcionais[j];
-            await fetch(url2).then(res => res.json())
-                .then(json =>
-                    aux2 = json
-                );
+            for (j = 0; j < req.body.parts.length; j++) {
 
-            parte = await switchToItemProduto(aux2);
+                var aux2;
+                var url2 = 'https://lapr5-gc.azurewebsites.net/api/product/search/' + req.body.parts[j];
+                await fetch(url2).then(res => res.json())
+                    .then(json =>
+                        aux2 = json
+                    );
 
-            package.larguraparte = parte.largura;
-            package.alturaparte = parte.altura;
-            package.profundidadeparte = parte.profundidade;
-            package.materialPartes = parte.materiaisAcabamentos;
+                if (await Restricao.checkParte(aux2.name, produto.nome)) {
+                    produto.partesOpcionais.push(aux2.name);
+                }
 
-            if (await Restricao.checkMaterial(package) && await Restricao.checkCaber(package) && await Restricao.checkOcupacao(package)) {
-                listPartes.push(parte.nome);
-                count2++;
             }
 
+            var aux3;
+
+            var url = 'https://lapr5-gc.azurewebsites.net/api/combination';
+            await fetch(url).then(res => res.json())
+                .then(json =>
+                    aux3 = json
+                );
+
+            for (var i = 0; i < aux3.length; i++) {
+                if (aux3[i].containingProduct == produto.nome && aux3[i].required == true) {
+                    produto.partesObrigatorias.push(aux3[i].containedProduct);
+                }
+            }
+
+            if (produto.partesOpcionais.length == req.body.parts.length) {
+                produto.altura = req.body.heigth;
+                produto.profundidade = req.body.depth;
+                produto.largura = req.body.width;
+                produto.materiaisAcabamentos = req.body.materialsFinishes;
+                produto.encomendaId = req.params.encomendaId;
+                await ItemProdutoRepository.deleteItemEncomenda(req.params.itemName, req.params.encomendaId, res);
+                await ItemProdutoRepository.saveItemProduto(produto, res);
+                res.json({ message: 'Item Produto updated!' });
+            } else {
+                res.json({ message: 'Invalid Parts!' });
+            }
+
+        } else {
+            res.json({ message: 'Invalid Materials and Finishes!' });
         }
 
+    } else {
+        res.json({ message: 'Invalid Dimensions!' });
     }
-
-    if (count2 == req.body.partesOpcionais.length) {
-        produto.partesOpcionais = listPartes;
-        produto.altura = req.body.altura;
-        produto.profundidade = req.body.profundidade;
-        produto.largura = req.body.largura;
-        produto.materiaisAcabamentos = req.body.materiaisAcabamentos;
-        produto.encomendaId = req.params.encomenda_id;
-        await EncomendaRepository.editEncomenda(produto,req,res);
-        await ItemProdutoRepository.saveItemProduto(produto,res);
-    }
-
-    res.json({ message: 'Item Produto saved!' });
 
 }
 
 function switchToItemProduto(data) {
 
     var itemProduto = new ItemProduto();
-    itemProduto.produtoId = data.id;
-    itemProduto.nome = data.nome;
-    itemProduto.custo = data.preco;
-    itemProduto.categoria = data.categoria;
-    itemProduto.restringirMateriais = data.restrigirMateriais;
-    itemProduto.taxaOcupacaoObrigatoria = data.taxaOcupacaoAtual;
-    itemProduto.taxaOcupacaoTotal = 0;
-    itemProduto.maxTaxaOcupacao = data.maxTaxaOcupacao;
-    itemProduto.partesObrigatorias = data.obrigatoria;
-    itemProduto.altura = data.altura;
-    itemProduto.alturaMax = data.alturaMax;
-    itemProduto.alturaMin = data.alturaMin;
-    itemProduto.largura = data.largura;
-    itemProduto.larguraMax = data.larguraMax;
-    itemProduto.larguraMin = data.larguraMin;
-    itemProduto.profundidade = data.profundidade;
-    itemProduto.profundidadeMax = data.profundidadeMax;
-    itemProduto.profundidadeMin = data.profundidadeMin;
-    itemProduto.materiaisAcabamentosId = data.materiaisAcabamentosId;
-    itemProduto.partesObrigatorias = data.obrigatoria;
+    itemProduto.produtoId = data.productId;
+    itemProduto.nome = data.name;
+    itemProduto.categoria = data.category;
+    itemProduto.altura = data.dimensions[0].height.value;
+    itemProduto.alturaMax = data.dimensions[0].height.valueMax;
+    itemProduto.largura = data.dimensions[0].width.value;
+    itemProduto.larguraMax = data.dimensions[0].width.valueMax;
+    itemProduto.profundidade = data.dimensions[0].depth.value;
+    itemProduto.profundidadeMax = data.dimensions[0].depth.valueMax;
 
     return itemProduto;
 
 }
 
+function constructPackage(produto, data) {
+    return {
+        alturaproduto: data.body.heigth,
+        profundidadeproduto: data.body.depth,
+        larguraproduto: data.body.width,
+        larguramaxproduto: produto.larguraMax,
+        alturamaxproduto: produto.alturaMax,
+        profundidademaxproduto: produto.profundidadeMax,
+        materiaisAcabamentos: data.body.materialsFinishes
+    }
+}

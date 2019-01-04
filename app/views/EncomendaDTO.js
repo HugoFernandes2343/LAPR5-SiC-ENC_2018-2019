@@ -7,7 +7,6 @@ class EncomendaDTO {
             name: encomenda.name,
             date: encomenda.date,
             address: encomenda.address,
-            cost: encomenda.cost,
             itens: encomenda.itens,
         }
     }

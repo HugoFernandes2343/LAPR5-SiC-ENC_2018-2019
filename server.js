@@ -45,69 +45,59 @@ router.get('/', function (req, res) {
 // ----------------------------------------------------
 router.route('/encomendas')
 
-    // create a encomenda (accessed at POST http://localhost:8080/api/encomendas)
-    .post(EncomendaService.postEncomenda)
-
     // get all the encomendas (accessed at GET http://localhost:8080/api/encomendas)
     .get(EncomendaService.getAllEncomendas);
 
-// on routes that end in /encomendas/:encomenda_id
+// on routes that end in /encomendas/user/:username
 // ----------------------------------------------------
-router.route('/encomendas/:encomenda_id')
+router.route('/encomendas/user/:username')
 
-    // get the encomenda with that id (accessed at GET http://localhost:8080/api/encomendas/:encomenda_id)
-    .get(EncomendaService.getEncomenda)
+    // get encomendas by username (accessed at GET http://localhost:8080/api/encomendas/user/:username)
+    .get(EncomendaService.getEncomendasByUsername);
 
-    // update the encomenda with this id (accessed at PUT http://localhost:8080/api/encomendas/:encomenda_id)
-    .put(EncomendaService.putEncomenda)
+// on routes that end in /encomendas/:encomendaId
+// ----------------------------------------------------
+router.route('/encomendas/:encomendaId')
 
-    // delete the encomenda with this id (accessed at DELETE http://localhost:8080/api/encomendas/:encomenda_id)
+    // delete the encomenda (accessed at DELETE http://localhost:8080/api/encomendas/:encomendaId)
     .delete(EncomendaService.deleteEncomenda);
 
-// on routes that end in /encomendas/:encomenda_id
+// on routes that end in /encomendasDetails
 // ----------------------------------------------------
-router.route('/encomendasDetails/:encomenda_id')
+router.route('/encomendasDetails')
 
-    // update the encomenda details with this id (accessed at PUT http://localhost:8080/api/encomendasDetails/:encomenda_id)
-    .put(EncomendaService.putEncomendaDetails)
+    // post encomenda details (accessed at POST http://localhost:8080/api/encomendasDetails)
+    .post(EncomendaService.postEncomendaDetails)
 
-// on routes that end in /encomendas/:encomenda_id/itens
+// on routes that end in /encomendasDetails/:encomendaId
 // ----------------------------------------------------
-router.route('/encomendas/:encomenda_id/itens')
+router.route('/encomendasDetails/:encomendaId')
 
-    // get the itensproduto from encomenda(accessed at GET http://localhost:8080/api/encomendas/:encomenda_id/itens)
-    .get(EncomendaService.getItensEncomenda)
+    // get the encomenda details (accessed at GET http://localhost:8080/api/encomendasDetails/:encomendaId)
+    .get(EncomendaService.getEncomendaDetails)
 
-// on routes that end in /encomendas/:encomenda_id/itens
+    // put encomenda details (accessed at PUT http://localhost:8080/api/encomendasDetails/:encomendaId)
+    .put(EncomendaService.putEncomendaDetails);
+
+// on routes that end in /encomendasDetails/:encomendaId/itens
 // ----------------------------------------------------
-router.route('/encomendas/:encomenda_id/itens/:itemproduto_id')
+router.route('/encomendasDetails/:encomendaId/itens')
 
-    // get the itemproduto from encomenda with that id (accessed at GET http://localhost:8080/api/encomendas/:encomenda_id/itens/itemproduto_id)
-    .get(EncomendaService.getItemEncomenda)
+    // get encomenda itens (accessed at GET http://localhost:8080/api/encomendasDetails/:encomendaId/itens)
+    .get(ItemProdutoService.getItensEncomenda)
 
-    // update the encomenda details with this id (accessed at PUT http://localhost:8080/api/encomendasDetails/:encomenda_id)
-    .put(ItemProdutoService.putEncomendaItemProduto)
+    // post encomenda itens (accessed at POST http://localhost:8080/api/encomendasDetails/:encomendaId/itens)
+    .post(ItemProdutoService.postItemEncomenda);
 
-    // update the encomenda details with this id (accessed at PUT http://localhost:8080/api/encomendasDetails/:encomenda_id)
-    .post(ItemProdutoService.postEncomendaItemProduto)
-
-    // get the itemproduto from encomenda with that id (accessed at DELETE http://localhost:8080/api/encomendas/:encomenda_id/itensProduto/itemproduto)
-    .delete(ItemProdutoService.deleteItemEncomenda);
-
-
-// on routes that end in /itemproduto
+// on routes that end in /encomendasDetails/:encomendaId/itens/:itemId
 // ----------------------------------------------------
-router.route('/itemproduto')
+router.route('/encomendasDetails/:encomendaId/itens/:itemName')
 
-    // get all the itemprodutos (accessed at GET http://localhost:8080/api/itemproduto)
-    .get(ItemProdutoService.getAllItemProdutos);
+    // get encomenda item (accessed at GET http://localhost:8080/api/encomendasDetails/:encomendaId/itens/:itemId)
+    .get(ItemProdutoService.getItemEncomenda)
 
-// on routes that end in /itemproduto/:itemproduto_id
-// ----------------------------------------------------
-router.route('/itemproduto/:itemproduto_id')
-
-    // get the itemproduto with that id (accessed at GET http://localhost:8080/api/itemproduto/:itemproduto_id)
-    .get(ItemProdutoService.getItemProduto)
+    // put encomenda item (accessed at PUT http://localhost:8080/api/encomendasDetails/:encomendaId/itens/:itemId)
+    .put(ItemProdutoService.putItemEncomenda);
 
 // REGISTER OUR ROUTES -------------------------------
 // all of our routes will be prefixed with /api

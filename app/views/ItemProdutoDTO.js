@@ -5,7 +5,6 @@ class ItemProdutoDTO {
         return {
             idProduto: itemProduto.produtoId,
             nome: itemProduto.nome,
-            custo: itemProduto.custo,
             categoria: itemProduto.categoria,
             altura: itemProduto.altura,
             profundidade: itemProduto.profundidade,
