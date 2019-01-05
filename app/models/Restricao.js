@@ -33,7 +33,7 @@ exports.checkMateriaisAcabamentos = function (package, aux) {
 
 
     if (aux.materials.length != 0) {
-        materiaisAcabamentos = package.materiaisAcabamentos.split(';');
+        materiaisAcabamentos = package.materiaisAcabamentos;
 
         for (var i = 0; i < materiaisAcabamentos.length; i++) {
             material = materiaisAcabamentos[i].slice(0, materiaisAcabamentos[i].indexOf("acabamentos") - 5).trim();
