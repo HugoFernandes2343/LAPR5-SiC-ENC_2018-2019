@@ -26,7 +26,7 @@ exports.deleteEncomenda = async function (req, res) {
 exports.postEncomendaDetails = async function (req, res) {
 
     var encomenda = new Encomenda();
-    encomenda._id = req.body.encomendaId;
+    encomenda._id = req.body.orderId;
     encomenda.name = req.body.name;
     encomenda.date = req.body.date;
     encomenda.address = req.body.address;
@@ -48,7 +48,7 @@ exports.putEncomendaDetails = async function (req, res) {
     await EncomendaRepository.deleteEncomenda(req, res);
 
     var encomenda = new Encomenda();
-    encomenda._id = req.body.encomendaId;
+    encomenda._id = req.body.orderId;
     encomenda.name = req.body.name;
     encomenda.date = req.body.date;
     encomenda.address = req.body.address;

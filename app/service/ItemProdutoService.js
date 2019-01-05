@@ -22,7 +22,7 @@ exports.postItemEncomenda = async function (req, res) {
     var aux;
     var produto;
 
-    var url = 'https://lapr5-gc.azurewebsites.net/api/product/search/' + req.body.name;
+    var url = 'https://lapr5-gc.azurewebsites.net/api/product/search/' + req.body.nome;
     await fetch(url).then(res => res.json())
         .then(json =>
             aux = json
@@ -35,10 +35,10 @@ exports.postItemEncomenda = async function (req, res) {
     if (await Restricao.checkDimensao(package)) {
         if (await Restricao.checkMateriaisAcabamentos(package, aux)) {
 
-            for (j = 0; j < req.body.parts.length; j++) {
+            for (j = 0; j < req.body.partesOpcionais.length; j++) {
 
                 var aux2;
-                var url2 = 'https://lapr5-gc.azurewebsites.net/api/product/search/' + req.body.parts[j];
+                var url2 = 'https://lapr5-gc.azurewebsites.net/api/product/search/' + req.body.partesOpcionais[j];
                 await fetch(url2).then(res => res.json())
                     .then(json =>
                         aux2 = json
@@ -64,11 +64,11 @@ exports.postItemEncomenda = async function (req, res) {
                 }
             }
 
-            if (produto.partesOpcionais.length == req.body.parts.length) {
-                produto.altura = req.body.heigth;
-                produto.profundidade = req.body.depth;
-                produto.largura = req.body.width;
-                produto.materiaisAcabamentos = req.body.materialsFinishes;
+            if (produto.partesOpcionais.length == req.body.partesOpcionais.length) {
+                produto.altura = req.body.altura;
+                produto.profundidade = req.body.profundidade;
+                produto.largura = req.body.largura;
+                produto.materiaisAcabamentos = req.body.materiaisAcabamentos;
                 produto.encomendaId = req.params.encomendaId;
                 await EncomendaRepository.editEncomenda(produto, req, res);
                 await ItemProdutoRepository.saveItemProduto(produto, res);
@@ -106,10 +106,10 @@ exports.putItemEncomenda = async function (req, res) {
     if (await Restricao.checkDimensao(package)) {
         if (await Restricao.checkMateriaisAcabamentos(package, aux)) {
 
-            for (j = 0; j < req.body.parts.length; j++) {
+            for (j = 0; j < req.body.partesOpcionais.length; j++) {
 
                 var aux2;
-                var url2 = 'https://lapr5-gc.azurewebsites.net/api/product/search/' + req.body.parts[j];
+                var url2 = 'https://lapr5-gc.azurewebsites.net/api/product/search/' + req.body.partesOpcionais[j];
                 await fetch(url2).then(res => res.json())
                     .then(json =>
                         aux2 = json
@@ -135,11 +135,11 @@ exports.putItemEncomenda = async function (req, res) {
                 }
             }
 
-            if (produto.partesOpcionais.length == req.body.parts.length) {
-                produto.altura = req.body.heigth;
-                produto.profundidade = req.body.depth;
-                produto.largura = req.body.width;
-                produto.materiaisAcabamentos = req.body.materialsFinishes;
+            if (produto.partesOpcionais.length == req.body.partesOpcionais.length) {
+                produto.altura = req.body.altura;
+                produto.profundidade = req.body.profundidade;
+                produto.largura = req.body.largura;
+                produto.materiaisAcabamentos = req.body.materiaisAcabamentos;
                 produto.encomendaId = req.params.encomendaId;
                 await ItemProdutoRepository.deleteItemEncomenda(req.params.itemName, req.params.encomendaId, res);
                 await ItemProdutoRepository.saveItemProduto(produto, res);
@@ -177,12 +177,12 @@ function switchToItemProduto(data) {
 
 function constructPackage(produto, data) {
     return {
-        alturaproduto: data.body.heigth,
-        profundidadeproduto: data.body.depth,
-        larguraproduto: data.body.width,
+        alturaproduto: data.body.altura,
+        profundidadeproduto: data.body.profundidade,
+        larguraproduto: data.body.largura,
         larguramaxproduto: produto.larguraMax,
         alturamaxproduto: produto.alturaMax,
         profundidademaxproduto: produto.profundidadeMax,
-        materiaisAcabamentos: data.body.materialsFinishes
+        materiaisAcabamentos: data.body.materiaisAcabamentos
     }
 }

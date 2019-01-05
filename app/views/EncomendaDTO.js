@@ -3,7 +3,7 @@ class EncomendaDTO {
 
     createDTO(encomenda) {
         return {
-            encomendaId: encomenda._id,
+            orderId: encomenda._id,
             name: encomenda.name,
             date: encomenda.date,
             address: encomenda.address,
