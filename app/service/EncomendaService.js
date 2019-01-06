@@ -30,6 +30,7 @@ exports.postEncomendaDetails = async function (req, res) {
     encomenda.name = req.body.name;
     encomenda.date = req.body.date;
     encomenda.address = req.body.address;
+    encomenda.status = req.body.status;
     encomenda.itens = [];
 
     await EncomendaRepository.saveEncomenda(encomenda, res);
@@ -52,6 +53,7 @@ exports.putEncomendaDetails = async function (req, res) {
     encomenda.name = req.body.name;
     encomenda.date = req.body.date;
     encomenda.address = req.body.address;
+    encomenda.status = req.body.status;
     encomenda.itens = req.body.itens;
 
     await EncomendaRepository.saveEncomenda(encomenda, res);

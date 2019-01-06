@@ -7,6 +7,7 @@ var EncomendaSchema   = new Schema({
     name: String,
     date: String,
     address: String,
+    status: String,
     itens: [{type : String}]
 });
 
